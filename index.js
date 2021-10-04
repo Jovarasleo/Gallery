@@ -45,10 +45,8 @@ function getImages() {
     appSelector.appendChild(createDiv);
     let createImg = document.createElement("img");
     createDiv.appendChild(createImg);
-    for (let key in imgObject) {
-      createImg.src = `${imgObject[(key = "src")]}`;
-      createImg.alt = `${imgObject[(key = "alt")]}`;
-    }
+    createImg.src = imgObject.src;
+    createImg.alt = imgObject.alt;
   });
 }
 //load images on DOM load
