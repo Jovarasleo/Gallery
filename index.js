@@ -50,7 +50,7 @@ function getImages() {
   });
 }
 //load images on DOM load
-document.addEventListener("onload", getImages());
+document.addEventListener("DOMContentLoaded", getImages());
 //clicking on image makes it popout and take an entire page
 let imgSelector = document.querySelectorAll("#app .image-container");
 imgSelector.forEach((selectedImg) => {
@@ -59,8 +59,8 @@ imgSelector.forEach((selectedImg) => {
     createDiv = selectedImg.cloneNode(true);
     createDiv.classList.add("big-div");
     appSelector.appendChild(createDiv);
-    let imgSelector1 = document.querySelector("#app .big-div img");
-    imgSelector1.classList.add("big-image");
+    let bigImage = document.querySelector("#app .big-div img");
+    bigImage.classList.add("big-image");
     let arrowRight = document.createElement("div");
     let arrowLeft = document.createElement("div");
     //creating arrows for changing an image
@@ -82,38 +82,56 @@ imgSelector.forEach((selectedImg) => {
         }
       }
     });
+    const images = document.querySelectorAll("#app .image-container img");
+    const imgArray = Array.from(images);
+
     //Clicking arrows switches to the next or previous image in DOM
-    arrowRight.addEventListener("click", () => {
-      if (selectedImg.nextSibling != null) {
-        selectedImg = selectedImg.nextSibling;
-        imgSelector1.src = selectedImg.querySelector("img").src;
-        imgSelector1.alt = selectedImg.querySelector("img").alt;
+
+    function nextImage() {
+      let index = imgArray.findIndex((element) => {
+        if (element.src === bigImage.src) {
+          return true;
+        }
+      });
+      if (index < imgArray.length) {
+        bigImage.src = imgArray[index + 1].src;
+        bigImage.alt = imgArray[index + 1].alt;
       }
+      if (index == imgArray.length - 2) {
+        bigImage.src = imgArray[0].src;
+        bigImage.alt = imgArray[0].alt;
+      }
+    }
+    function previousImage() {
+      let index = imgArray.findIndex((element) => {
+        if (element.src === bigImage.src) {
+          return true;
+        }
+      });
+      if (index < imgArray.length && index > 0) {
+        bigImage.src = imgArray[index - 1].src;
+        bigImage.alt = imgArray[index - 1].alt;
+      }
+      if (index == 0) {
+        bigImage.src = imgArray[imgArray.length - 2].src;
+        bigImage.alt = imgArray[imgArray.length - 2].alt;
+      }
+    }
+    arrowRight.addEventListener("click", () => {
+      nextImage();
     });
     arrowLeft.addEventListener("click", () => {
-      if (selectedImg.previousSibling != null) {
-        selectedImg = selectedImg.previousSibling;
-        imgSelector1.src = selectedImg.querySelector("img").src;
-        imgSelector1.alt = selectedImg.querySelector("img").alt;
-      }
+      previousImage();
     });
     //keyboard left and right arrows switches to the next or previous image in DOM
     document.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowRight") {
-        if (selectedImg.nextSibling != null) {
-          selectedImg = selectedImg.nextSibling;
-          imgSelector1.src = selectedImg.querySelector("img").src;
-          imgSelector1.alt = selectedImg.querySelector("img").alt;
-        }
+      if (event.key === "ArrowLeft") {
+        previousImage(bigImage);
       }
     });
     document.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowLeft") {
-        if (selectedImg.previousSibling != null) {
-          selectedImg = selectedImg.previousSibling;
-          imgSelector1.src = selectedImg.querySelector("img").src;
-          imgSelector1.alt = selectedImg.querySelector("img").alt;
-        }
+      if (event.key === "ArrowRight") {
+        nextImage(bigImage);
       }
     });
   });

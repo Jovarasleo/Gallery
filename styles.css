@@ -4,17 +4,21 @@
 }
 body {
   background-color: rgb(202, 202, 202);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 #app {
-  margin: 100px auto 100px;
-  padding-bottom: 100px;
   width: 90%;
   max-width: 1200px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 5%;
+  grid-template-rows: 1fr 1fr 1fr;
 }
-
+.image-container {
+  display: flex;
+}
 img {
   width: 100%;
 }
@@ -26,6 +30,7 @@ img {
   width: 100%;
   height: 100%;
   background-color: rgba(75, 75, 75, 0.747);
+  user-select: none;
 }
 .big-image {
   position: absolute;
@@ -33,7 +38,7 @@ img {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 80%;
-  max-width: 1200px;
+  max-width: 1100px;
 }
 .arrowRight {
   background-image: url("/assets/icons/arrow-right.png");
