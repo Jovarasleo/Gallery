@@ -36,14 +36,18 @@ let imageContainer = [
     alt: "whale tale above water surface",
   },
 ];
+function createEl (type, className) {
+  let element = document.createElement(type);
+  element.classList = className;
+  return element;
+} 
 // Load images from an array of objects to the DOM
 const appSelector = document.querySelector("#app");
 function getImages() {
   imageContainer.forEach((imgObject) => {
-    let createDiv = document.createElement("div");
-    createDiv.classList.add("image-container");
+    let createDiv = createEl ("div", "image-container")
+    let createImg = createEl("img", "image")
     appSelector.appendChild(createDiv);
-    let createImg = document.createElement("img");
     createDiv.appendChild(createImg);
     createImg.src = imgObject.src;
     createImg.alt = imgObject.alt;
@@ -53,86 +57,73 @@ function getImages() {
 document.addEventListener("DOMContentLoaded", getImages());
 //clicking on image makes it popout and take an entire page
 let imgSelector = document.querySelectorAll("#app .image-container");
-imgSelector.forEach((selectedImg) => {
+imgSelector.forEach((selectedImg,index) => {
   selectedImg.addEventListener("click", () => {
-    let createDiv = document.createElement("div");
-    createDiv = selectedImg.cloneNode(true);
-    createDiv.classList.add("big-div");
-    appSelector.appendChild(createDiv);
-    let bigImage = document.querySelector("#app .big-div img");
-    bigImage.classList.add("big-image");
-    let arrowRight = document.createElement("div");
-    let arrowLeft = document.createElement("div");
+    let createDiv = createEl("div", "big-div");
+    let bigImage = createEl("img", "big-image");
+    bigImage.src = imageContainer[index].src;
+    bigImage.alt = imageContainer[index].alt;
+    createDiv.appendChild(bigImage);
+    appSelector.appendChild(createDiv);;
     //creating arrows for changing an image
-    arrowRight.classList.add("arrowRight", "arrow");
-    arrowLeft.classList.add("arrowLeft", "arrow");
-    createDiv.appendChild(arrowRight);
-    createDiv.appendChild(arrowLeft);
+    let arrowRight = createEl ("div", "arrowRight");
+    let arrowLeft = createEl ("div", "arrowLeft");
+    createDiv.append(arrowRight, arrowLeft);
     //clicking on the image removes created elements (removes effect)
-    document
-      .querySelector("#app .big-div img")
-      .addEventListener("click", () => {
-        document.querySelector("#app .big-div").remove();
+    bigImage.addEventListener("click", () => {
+        createDiv.remove();
       });
     //keyboard escape removes popout
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
         if (document.querySelector("#app .big-div") != null) {
-          document.querySelector("#app .big-div").remove();
+          createDiv.remove();
         }
       }
     });
-    const images = document.querySelectorAll("#app .image-container img");
-    const imgArray = Array.from(images);
-
-    //Clicking arrows switches to the next or previous image in DOM
-
+    // functions which allows to switch photos
+    let newindex = index;
     function nextImage() {
-      let index = imgArray.findIndex((element) => {
-        if (element.src === bigImage.src) {
-          return true;
-        }
-      });
-      if (index < imgArray.length) {
-        bigImage.src = imgArray[index + 1].src;
-        bigImage.alt = imgArray[index + 1].alt;
+      if (newindex < imageContainer.length-1) {
+        newindex ++;
+        bigImage.src = imageContainer[newindex].src;
+        bigImage.alt = imageContainer[newindex].alt;
       }
-      if (index == imgArray.length - 2) {
-        bigImage.src = imgArray[0].src;
-        bigImage.alt = imgArray[0].alt;
-      }
-    }
+      else if (newindex == imageContainer.length-1) {
+        bigImage.src = imageContainer[0].src;
+        bigImage.alt = imageContainer[0].alt;
+        newindex = 0;
+      };
+    };
     function previousImage() {
-      let index = imgArray.findIndex((element) => {
-        if (element.src === bigImage.src) {
-          return true;
-        }
-      });
-      if (index < imgArray.length && index > 0) {
-        bigImage.src = imgArray[index - 1].src;
-        bigImage.alt = imgArray[index - 1].alt;
+      if (newindex < imageContainer.length && newindex > 0) {
+        newindex --;
+        bigImage.src = imageContainer[newindex].src;
+        bigImage.alt = imageContainer[newindex].alt;
       }
-      if (index == 0) {
-        bigImage.src = imgArray[imgArray.length - 2].src;
-        bigImage.alt = imgArray[imgArray.length - 2].alt;
-      }
-    }
+      else if (newindex == 0) {
+        bigImage.src = imageContainer[imageContainer.length-1].src;
+        bigImage.alt = imageContainer[imageContainer.length-1].alt;
+        newindex = imageContainer.length -1
+      };
+    };
+    //Clicking arrows switches to the next or previous image in DOM
     arrowRight.addEventListener("click", () => {
       nextImage();
     });
     arrowLeft.addEventListener("click", () => {
       previousImage();
     });
-    //keyboard left and right arrows switches to the next or previous image in DOM
+    //Keyboard left and right arrows switches to the next or previous image in DOM
     document.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowLeft") {
-        previousImage(bigImage);
+      if (event.key == "ArrowLeft") {
+        previousImage();
       }
     });
     document.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowRight") {
-        nextImage(bigImage);
+      if (event.key == "ArrowRight") {
+        nextImage();
       }
     });
   });
-});
+;});

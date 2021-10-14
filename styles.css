@@ -8,18 +8,23 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
+  box-sizing: border-box;
+  
 }
 #app {
+  position: relative;
   width: 90%;
   max-width: 1200px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr;
+  gap:20px;
+  box-sizing: border-box;
 }
 .image-container {
   display: flex;
 }
-img {
+.image {
   width: 100%;
 }
 .big-div {
